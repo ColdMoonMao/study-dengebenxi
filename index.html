@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ 	<meta charset="UTF-8">
+ 	<title>等额本息</title>
+ 	<style>
+ 	     table {
+ 	 	border-collapse: collapse;
+ 	 }
+ 	 
+ 	 tr td:first-child {
+ 	  	font-weight: bold;
+ 	  }
+ 	  
+ 	  th,
+ 	  td {
+ 	   	border: 1px solid #999;
+ 	   	padding: 2px 5px;
+ 	   }
+ 	   
+ 	   .disable {
+ 	    	display: none;
+ 	    }
+ 	    
+ 	    .enable {
+ 	     	display: table;
+ 	     }
+ 	</style>
+</head>
+
+<body>
+ 	<h1>按揭还款计算器</h1>
+ 	<p>还 款&nbsp; 方 式：等额本息</p>
+ 	<p>贷 款&nbsp; 年 限：
+ 	 	<input type="text" id="year" value="1"></input>年。</p>
+ 	<p>贷 款&nbsp; 金 额：
+ 	 	<input type="text" id="money" value="10"></input>万元。</p>
+ 	<p>贷款年利率：
+ 	 	<input type="text" id="yearRate" value="1.2"></input>%</p>
+ 	<button id="cal">计算</button>
+ 	<button id="reset">重置</button>
+ 	<!-- <table id="th"></table> -->
+ 	<table id="result"></table>
+ 	<!-- <p id="result"></p> -->
+ 	<script>
+ 	var year = document.getElementById('year');
+ 	var total = document.getElementById('money');
+ 	var yearRate = document.getElementById('yearRate');
+ 	var cal = document.getElementById('cal');
+ 	var reset = document.getElementById('reset');
+ 	var th = document.getElementById('th');
+ 	var result = document.getElementById('result');
+ 	// 点击重置按钮;
+ 	reset.onclick = function funReset() {
+ 	 	 	year.value = '';
+ 	 	 	total.value = '';
+ 	 	 	yearRate.value = '';
+ 	 	 	result.className = 'disable';
+ 	 	}
+ 	 	//点击计算按钮；
+ 	cal.onclick = function funCal() {
+ 	 	var month = Number(year.value) * 12; //贷款月数
+ 	 	var totalMoney = Number(total.value) * 10000; //贷款总额，单位元
+ 	 	var monthRate = Number(yearRate.value) / 1200; //贷款月利息
+ 	 	console.log(month + '(月)');
+ 	 	console.log(totalMoney + '(元)');
+ 	 	console.log(monthRate + '(月利率)');
+
+ 	 	// 月供计算函数
+ 	 	function funMonthMoney(month, totalMoney, monthRate) {
+ 	 	 	var pow = Math.pow(1 + monthRate, month);
+ 	 	 	console.log(pow + ' ' + '(1+月利率的月数次方)');
+ 	 	 	return monthMoney = Math.round(totalMoney * monthRate * pow / (pow - 1) * 100) / 100;
+ 	 	}
+ 	 	var monthMoney = funMonthMoney(month, totalMoney, monthRate);
+ 	 	// console.log(monthMoney + '(月供)');
+
+ 	 	// 月还利息计算函数
+
+ 	 	function funMonthInterest(n) {
+ 	 	 	var pow = Math.pow(1 + monthRate, n - 1);
+ 	 	 	return Math.round(((totalMoney * monthRate - monthMoney) * pow + monthMoney) * 100) / 100;
+ 	 	}
+ 	 	// console.log(funMonthInterest(2) + '(月还利息)');
+
+ 	 	// 月还本金计算函数
+ 	 	function funMonthFact(n) {
+ 	 	 	return Math.round((monthMoney - funMonthInterest(n)) * 100) / 100;
+ 	 	}
+ 	 	// console.log(funMonthFact(2) + '(月还本金)');
+
+ 	 	//月还本金累计
+ 	 	function funFact(n) {
+
+ 	 	}
+
+ 	 	//剩余本金
+ 	 	function funRemainMoney(n) {
+ 	 	 	var RemainMoney = totalMoney;
+ 	 	 	for (var i = 1; i <= n; i++) {
+ 	 	 	 	RemainMoney -= funMonthFact(i);
+ 	 	 	}
+ 	 	 	return Math.round((RemainMoney) * 100) / 100;
+ 	 	}
+ 	 	// console.log(funRemainMoney(2) + '(剩余本金)');
+ 	 	result.className = 'enable';
+
+
+ 	 	//输出结果
+ 	 	if (month != 0 && totalMoney != 0 && monthRate != 0) {
+ 	 	 	result.innerHTML = '<h3>输出结果</h3>';
+ 	 	 	result.innerHTML += '<tr><th>期次</th><th>偿还利息</th><th>偿还本金</th><th>当期月供</th><th>剩余本金</th></tr>';
+ 	 	}
+ 	 	for (var i = 1; i <= month; i++) {
+ 	 	 	// console.log('for tr ' + i);
+
+ 	 	 	// for (var j = 1; j <= 1; j++) {
+ 	 	 	if (i < month) {
+ 	 	 	 	result.innerHTML += '<tr>' + '<td>' + i + "期" + '</td><td>' + funMonthInterest(i) + "元" + '</td><td>' + funMonthFact(i) + "元" + '</td><td>' + monthMoney + "元" + '</td><td>' + funRemainMoney(i) + "元" + '</td>' + '</tr>';
+ 	 	 	 	// }
+ 	 	 	}
+ 	 	 	if (i == month) {
+ 	 	 		var lastMonthFact=Math.round((funMonthFact(i)+funRemainMoney(i))*100)/100;
+ 	 	 		var lastMonthMoney=Math.round((monthMoney+funRemainMoney(i))*100)/100;
+ 	 	 		console.log(lastMonthFact+'最后一月本金');
+ 	 	 		console.log(lastMonthMoney+'最后一月月供');
+ 	 	 	 	result.innerHTML += '<tr>' + '<td>' + i + "期" + '</td><td>' + funMonthInterest(i) + "元" + '</td><td>' + lastMonthFact + "元" + '</td><td>' + lastMonthMoney + "元" + '</td><td>' + 0 + "元" + '</td>' + '</tr>';
+ 	 	 	}
+ 	 	}
+
+ 	}
+ 	</script>
+</body>
+
+</html>
