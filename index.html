@@ -12,6 +12,7 @@
  	 
  	 tr td:first-child {
  	  	font-weight: bold;
+ 	  	text-align: center;
  	  }
  	  
  	  th,
@@ -41,9 +42,12 @@
  	 	<input type="text" id="yearRate" value="1.2"></input>%</p>
  	<button id="cal">计算</button>
  	<button id="reset">重置</button>
+ 	<!--  	<p>月均还款: <span id="mmoney"></span></p>
+ 	<p>支付利息: <span id="totalinterest"></span></p>
+ 	<p>还款总额</p> -->
+ 	<div id="res"></div>
  	<!-- <table id="th"></table> -->
  	<table id="result"></table>
- 	<!-- <p id="result"></p> -->
  	<script>
  	var year = document.getElementById('year');
  	var total = document.getElementById('money');
@@ -52,12 +56,15 @@
  	var reset = document.getElementById('reset');
  	var th = document.getElementById('th');
  	var result = document.getElementById('result');
+ 	var res = document.getElementById('res');
+
  	// 点击重置按钮;
  	reset.onclick = function funReset() {
  	 	 	year.value = '';
  	 	 	total.value = '';
  	 	 	yearRate.value = '';
- 	 	 	result.className = 'disable';
+ 	 	 	result.innerHTML = null;
+ 	 	 	res.innerHTML = null;
  	 	}
  	 	//点击计算按钮；
  	cal.onclick = function funCal() {
@@ -84,17 +91,21 @@
  	 	 	return Math.round(((totalMoney * monthRate - monthMoney) * pow + monthMoney) * 100) / 100;
  	 	}
  	 	// console.log(funMonthInterest(2) + '(月还利息)');
-
+ 	 	//支付总利息
+ 	 	function funTotalInterest() {
+ 	 	 	var TotalInterest = 0;
+ 	 	 	for (var i = 1; i <= month; i++) {
+ 	 	 	 	TotalInterest += funMonthInterest(i);
+ 	 	 	}
+ 	 	 	return Math.round((TotalInterest)*100)/100;
+ 	 	}
+ 	 	console.log(funTotalInterest() + '支付总利息');
  	 	// 月还本金计算函数
  	 	function funMonthFact(n) {
  	 	 	return Math.round((monthMoney - funMonthInterest(n)) * 100) / 100;
  	 	}
  	 	// console.log(funMonthFact(2) + '(月还本金)');
 
- 	 	//月还本金累计
- 	 	function funFact(n) {
-
- 	 	}
 
  	 	//剩余本金
  	 	function funRemainMoney(n) {
@@ -105,11 +116,20 @@
  	 	 	return Math.round((RemainMoney) * 100) / 100;
  	 	}
  	 	// console.log(funRemainMoney(2) + '(剩余本金)');
- 	 	result.className = 'enable';
+ 	 	// result.className = 'enable';
+ 	 	// res.className = 'enable';
 
 
  	 	//输出结果
+
+
+
+
  	 	if (month != 0 && totalMoney != 0 && monthRate != 0) {
+ 	 	 	res.innerHTML = '<p>' + "月均还款: " + monthMoney + "元"+'</p>';
+ 	 	 	res.innerHTML += '<p>' + "支付利息: " + funTotalInterest() + "元"+'</p>';
+ 	 	 	var resTotal = funTotalInterest() + totalMoney;
+ 	 	 	res.innerHTML += '<p>' + "还款总额: " + resTotal + "元"+'</p>';
  	 	 	result.innerHTML = '<h3>输出结果</h3>';
  	 	 	result.innerHTML += '<tr><th>期次</th><th>偿还利息</th><th>偿还本金</th><th>当期月供</th><th>剩余本金</th></tr>';
  	 	}
@@ -122,15 +142,18 @@
  	 	 	 	// }
  	 	 	}
  	 	 	if (i == month) {
- 	 	 		var lastMonthFact=Math.round((funMonthFact(i)+funRemainMoney(i))*100)/100;
- 	 	 		var lastMonthMoney=Math.round((monthMoney+funRemainMoney(i))*100)/100;
- 	 	 		console.log(lastMonthFact+'最后一月本金');
- 	 	 		console.log(lastMonthMoney+'最后一月月供');
+ 	 	 	 	var lastMonthFact = Math.round((funMonthFact(i) + funRemainMoney(i)) * 100) / 100;
+ 	 	 	 	var lastMonthMoney = Math.round((monthMoney + funRemainMoney(i)) * 100) / 100;
+ 	 	 	 	console.log(lastMonthFact + '最后一月本金');
+ 	 	 	 	console.log(lastMonthMoney + '最后一月月供');
  	 	 	 	result.innerHTML += '<tr>' + '<td>' + i + "期" + '</td><td>' + funMonthInterest(i) + "元" + '</td><td>' + lastMonthFact + "元" + '</td><td>' + lastMonthMoney + "元" + '</td><td>' + 0 + "元" + '</td>' + '</tr>';
  	 	 	}
  	 	}
 
+
  	}
+
+
  	</script>
 </body>
 
