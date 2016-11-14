@@ -126,12 +126,12 @@
 
 
  	 	if (month != 0 && totalMoney != 0 && monthRate != 0) {
- 	 	 	res.innerHTML = '<p>' + "月均还款: " + monthMoney + "元"+'</p>';
- 	 	 	res.innerHTML += '<p>' + "支付利息: " + funTotalInterest() + "元"+'</p>';
+ 	 	 	res.innerHTML = '<h3>输出结果:</h3>';
+ 	 	 	res.innerHTML += '<p>' + "月均还款: " + monthMoney + " 元"+'</p>';
+ 	 	 	res.innerHTML += '<p>' + "支付利息: " + funTotalInterest() + " 元"+'</p>';
  	 	 	var resTotal = funTotalInterest() + totalMoney;
- 	 	 	res.innerHTML += '<p>' + "还款总额: " + resTotal + "元"+'</p>';
- 	 	 	result.innerHTML = '<h3>输出结果</h3>';
- 	 	 	result.innerHTML += '<tr><th>期次</th><th>偿还利息</th><th>偿还本金</th><th>当期月供</th><th>剩余本金</th></tr>';
+ 	 	 	res.innerHTML += '<p>' + "还款总额: " + resTotal + " 元"+'</p>';
+ 	 	 	result.innerHTML = '<tr><th>期次</th><th>偿还利息</th><th>偿还本金</th><th>当期月供</th><th>剩余本金</th></tr>';
  	 	}
  	 	for (var i = 1; i <= month; i++) {
  	 	 	// console.log('for tr ' + i);
